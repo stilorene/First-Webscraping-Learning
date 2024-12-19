@@ -36,7 +36,7 @@ for listelement in listelements:
     # find_a_tag = textfound.parent
     # foundlink = find_a_tag['href'] #Angezeigt wird nur der relative Link der mit der Basisurl kombiniert werden muss, checkste?
 
-    print(f"Gefundener Text: {textfound.strip()}")
+        print(f"Gefundener Text: {textfound.strip()}")
 
 # listelementtext = listelements[1].text #Nur der Text der list 
 # print(listelementtext)
