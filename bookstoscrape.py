@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import webbrowser
 
 
 
@@ -24,8 +25,8 @@ def getlinkgenre(listelements, url, input1):
             a_tag = listelement.find("a")
             if a_tag:
                 foundlink = a_tag['href'] #Angezeigt wird nur der relative Link der mit der Basisurl kombiniert werden muss, checkste?
-                combinedlink = url + foundlink
-                # webbrowser.open(foundlink) #Öffnet den Link im Browser
+                combinedlink = url + foundlink #Der kombinierte Link, auf einfache Art gelöst
+                # webbrowser.open("page-1.html") #Öffnet den Link im Browser
                  
                 break
 
@@ -36,24 +37,25 @@ def getlinkgenre(listelements, url, input1):
 # Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
 combinedlink = getlinkgenre(listelements, url, input1)
 if combinedlink:
-    print(f"Gefundener kombinierter Link: {combinedlink}")
+    print(f"Gefundener kombinierter Link: {combinedlink}\n\n")
 else:
-    print("Kein Link gefunden")
-
+    print("Kein Link gefunden\n\n")
 
 genrepage = requests.get(combinedlink).text
 genredoc = BeautifulSoup(genrepage, "html.parser")
-
 bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
-booklist = bookinfo.find_all("li")
+booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
 
-for element in booklist:
-    booktitle = element.find("h3").text
-    #Suche nach title
-    print(booktitle)
+bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
 
-# booktitle = bookinfo.find("li") #.find("h3").text
 
+for index, element in bookdict.items():
+    print(index, element)
+
+bookdirect = input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: ")
+
+bookdirect = int(index)
+print(bookdict[bookdirect])
 
 
 
