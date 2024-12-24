@@ -4,3 +4,6 @@ Ziel nächstes Mal:
 Die einzelnen Elemente der URL auszulagern abzuspeichern und nach Bedarf zusammenstecken wie eine Puzzle
 
 verstehen wie eine request.error == 404 direkt funktioniert
+
+Vorstellung wie ich den Link aufbaue:
+https://books.toscrape.com/catalogue/category/books/{genre}/page-{pagenumber}.html

@@ -24,20 +24,20 @@ def getlinkgenre(listelements, url, input1):
         if textfound: #obs halt True ist, ja dann mach das
             a_tag = listelement.find("a")
             if a_tag:
-                foundlink = a_tag['href'] #Angezeigt wird nur der relative Link der mit der Basisurl kombiniert werden muss, checkste?
-                combinedlink = url + foundlink #Der kombinierte Link, auf einfache Art gelöst
+                genreurl = a_tag['href'] #Angezeigt wird nur der relative Link der mit der Basisurl kombiniert werden muss, checkste?
+                combinedlink = url + genreurl #Der kombinierte Link, auf einfache Art gelöst
                 # webbrowser.open("page-1.html") #Öffnet den Link im Browser
                  
                 break
 
             print(f"Gefundener Text: {textfound.strip()}")
-    return combinedlink 
+    return combinedlink #Wie ein Prozess, das ist das Output der Funktion
+
                 
 
-# Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
-combinedlink = getlinkgenre(listelements, url, input1)
 
-def pageslinks(combindedlink):
+
+def pageslinks(combinedlink):
     pagenumber = 1
     pagelink = combinedlink + f"/page-{pagenumber}" #ist im Moment .../sequential-art_5/index.html/page-2 brauchen aber .../sequential-art_5/page-2.html
     print(pagelink)
@@ -54,37 +54,33 @@ def pageslinks(combindedlink):
     except requests.exceptions.RequestException as e:
         print(f"Ein Fehler ist aufgetreten: {e}")
 
-pageslinks(combinedlink) #funktion ausführen
-
-if combinedlink:
-    print(f"Gefundener kombinierter Link: {combinedlink}\n\n")
-else:
-    print("Kein Link gefunden\n\n")
-
-genrepage = requests.get(combinedlink).text
-genredoc = BeautifulSoup(genrepage, "html.parser")
-bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
-booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
-
-bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
+#pageslinks(combinedlink) #funktion ausführen
 
 
-for index, element in bookdict.items():
-    print(index, element)
+def foundbooks(combinedlink):
+    genrepage = requests.get(combinedlink).text
+    genredoc = BeautifulSoup(genrepage, "html.parser")
+    bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
+    booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
+    bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
 
-bookdirect = input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: ")
+    for index, element in bookdict.items():
+        print(index, element)
 
-bookdirect = int(index)
-print(bookdict[bookdirect])
-
-print(f"{combinedlink}/page-2")
+    bookdirect = int(input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: "))
+    
+    print(bookdict[bookdirect])
 
 
 
 
 
+# Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
+combinedlink = getlinkgenre(listelements, url, input1)
+pageslinks(combinedlink)
+foundbooks(combinedlink)
      
-     
+
 
 
 
