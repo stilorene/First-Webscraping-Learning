@@ -36,6 +36,26 @@ def getlinkgenre(listelements, url, input1):
 
 # Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
 combinedlink = getlinkgenre(listelements, url, input1)
+
+def pageslinks(combindedlink):
+    pagenumber = 1
+    pagelink = combinedlink + f"/page-{pagenumber}" #ist im Moment .../sequential-art_5/index.html/page-2 brauchen aber .../sequential-art_5/page-2.html
+    print(pagelink)
+    try:
+        response = requests.get(pagelink)
+        
+        # Überprüfe den Statuscode
+        if response.status_code == 404:
+            print("lol IST EIN UNGÜLTIGER LINK")
+            return None
+        else:
+            print("Link ist gültig!")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Ein Fehler ist aufgetreten: {e}")
+
+pageslinks(combinedlink) #funktion ausführen
+
 if combinedlink:
     print(f"Gefundener kombinierter Link: {combinedlink}\n\n")
 else:
@@ -56,6 +76,10 @@ bookdirect = input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: ")
 
 bookdirect = int(index)
 print(bookdict[bookdirect])
+
+print(f"{combinedlink}/page-2")
+
+
 
 
 
