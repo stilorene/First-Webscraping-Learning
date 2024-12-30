@@ -35,41 +35,35 @@ def getlinkgenre(listelements, url, input1):
 
                 
 
+def findnextpage(combinedlink):
+    page = requests.get(combinedlink).text
+    pages = BeautifulSoup(page, "html.parser")
+    findbutton = pages.find("li", class_= "next")
 
-
-def pageslinks(combinedlink):
-    pagenumber = 1
-    pagelink = combinedlink + f"/page-{pagenumber}" #ist im Moment .../sequential-art_5/index.html/page-2 brauchen aber .../sequential-art_5/page-2.html
-    print(pagelink)
-    try:
-        response = requests.get(pagelink)
-        
-        # Überprüfe den Statuscode
-        if response.status_code == 404:
-            print("lol IST EIN UNGÜLTIGER LINK")
-            return None
-        else:
-            print("Link ist gültig!")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Ein Fehler ist aufgetreten: {e}")
-
-#pageslinks(combinedlink) #funktion ausführen
-
-
-def foundbooks(combinedlink):
-    genrepage = requests.get(combinedlink).text
-    genredoc = BeautifulSoup(genrepage, "html.parser")
-    bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
-    booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
-    bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
-
-    for index, element in bookdict.items():
-        print(index, element)
-
-    bookdirect = int(input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: "))
+    if findbutton is None: 
+        print("Keine Weiteren Seiten gefunden!")
     
-    print(bookdict[bookdirect])
+    else: 
+        buttonlink = findbutton.find("a", href=True)
+        pagenumber = buttonlink["href"]
+    
+
+
+
+# def foundbooks(combinedlink):
+#     genrepage = requests.get(combinedlink).text
+#     genredoc = BeautifulSoup(genrepage, "html.parser")
+#     bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
+#     booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
+#     bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
+
+#     for index, element in bookdict.items():
+#         print(index, element)
+
+#     bookdirect = int(input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: "))
+    
+#     print(bookdict[bookdirect])
+
 
 
 
@@ -77,8 +71,8 @@ def foundbooks(combinedlink):
 
 # Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
 combinedlink = getlinkgenre(listelements, url, input1)
-pageslinks(combinedlink)
-foundbooks(combinedlink)
+findnextpage(combinedlink)
+
      
 
 
