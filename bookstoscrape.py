@@ -3,7 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-import webbrowser
+
 
 
 
@@ -50,10 +50,7 @@ def findnextpage(combinedlink):
         else: 
             buttonlink = findbutton.find("a", href=True)
             pagenumber = buttonlink["href"]
-
-
             base_url, last_element = combinedlink.rsplit("/", 1)
-
             # Das letzte Element ersetzen
             new_last_element = pagenumber
             new_url = f"{base_url}/{new_last_element}"
@@ -68,36 +65,23 @@ def findnextpage(combinedlink):
 
 
 def foundbooks(combinedlink, pagesurls):
+    index = 1
+    bookdict = {}
+    pageurllist = [combinedlink] + pagesurls
 
-    genrepage = requests.get(combinedlink).text
-    genredoc = BeautifulSoup(genrepage, "html.parser")
-    bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
-    booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
-    bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
-
-    for index, element in bookdict.items():
-        print(index, element)
-
-    # bookdirect = int(input("\nWelches Buch interessiert sie genauer?\nZahl eintippen: "))
-
-    # print(bookdict[bookdirect])
-
-
-    for pageurl in pagesurls:
+    for pageurl in pageurllist:
         genrepage = requests.get(pageurl).text
         genredoc = BeautifulSoup(genrepage, "html.parser")
         bookinfo = genredoc.find("ol", class_="row") #suche nach den einzelnen Buchelementen
         booklist = bookinfo.find_all("li") #findet liste und deren Bookpods
-        bookdict = {index: element.find("h3").text for index, element in enumerate(booklist, start=1) } #erstellt ein dict und gibt ihnen den Key: index
 
-        for index, element in bookdict.items():
-            print(index, element)
-
+        for book in booklist:
+            booktitle = book.find("h3").text
+            bookdict[index] = booktitle
+            index += 1
     
-
-
-
-
+    for index, element in bookdict.items():
+        print(index, element)
 
 
 # Funktionen um Seiteninhalt und deren Bücher zu scrapen Anfang
